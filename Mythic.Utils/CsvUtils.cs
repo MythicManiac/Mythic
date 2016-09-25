@@ -22,14 +22,15 @@ namespace Mythic.Utils
 
         public static void Write<T>(string path, T[][] data)
         {
-            var buffer = new MemoryStream();
-            var writer = new StreamWriter(buffer);
+            var stream = new FileStream(path, FileMode.Create);
+            var writer = new StreamWriter(stream);
             foreach (var entry in data)
             {
                 writer.WriteLine(string.Join(",", entry));
             }
             writer.Flush();
-            File.WriteAllBytes(path, buffer.ToArray());
+            stream.Close();
+            stream.Dispose();
         }
 
         public static T[][] ConvertValues<T>(string[][] values)
