@@ -9,9 +9,10 @@ namespace Mythic.Utils
         public static string[][] Read(string path)
         {
             var result = new List<string[]>();
-            var csvDatum = File.ReadAllLines(path);
-            foreach (var line in csvDatum)
+            var reader = new StreamReader(new FileStream(path, FileMode.Open));
+            while(!reader.EndOfStream)
             {
+                var line = reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
 
@@ -49,8 +50,23 @@ namespace Mythic.Utils
 
         public static T[][] ReadAndConvert<T>(string path)
         {
-            var values = Read(path);
-            return ConvertValues<T>(values);
+            var result = new List<T[]>();
+            var reader = new StreamReader(new FileStream(path, FileMode.Open));
+            while(!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                var strings = line.Split(',');
+                var values = new T[strings.Length];
+                for(var i = 0; i < strings.Length; i++)
+                {
+                    values[i] = (T)Convert.ChangeType(strings[i], typeof(T));
+                }
+                result.Add(values);
+            }
+            return result.ToArray();
         }
 
         public static Tuple<T1[], T2[]>[] ReadDataListPair<T1, T2>(string file1, string file2)
@@ -67,6 +83,19 @@ namespace Mythic.Utils
                 result[i] = Tuple.Create(items1[i], items2[i]);
             }
             return result;
+        }
+
+        public static void WriteDataListPair<T1, T2>(string path1, string path2, Tuple<T1[], T2[]>[] data)
+        {
+            var writer1 = new StreamWriter(new FileStream(path1, FileMode.Create));
+            var writer2 = new StreamWriter(new FileStream(path2, FileMode.Create));
+            foreach (var entry in data)
+            {
+                writer1.WriteLine(string.Join(",", entry.Item1));
+                writer2.WriteLine(string.Join(",", entry.Item2));
+            }
+            writer1.Close();
+            writer2.Close();
         }
     }
 

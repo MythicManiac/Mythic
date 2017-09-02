@@ -7,8 +7,6 @@ namespace Mythic.UtilsTests
     [TestClass]
     public class CsvUtilsTests
     {
-        private const string TEST_FILE_PATH = "TestCsv.csv";
-
         [TestMethod]
         public void TestRead()
         {
@@ -27,14 +25,15 @@ namespace Mythic.UtilsTests
         [TestMethod]
         public void TestWrite()
         {
-            Clear(TEST_FILE_PATH);
+            var path = "TestWrite.csv";
+            Clear(path);
             var data = new object[][]
             {
                 new object[] {"kek", 43, 2 },
                 new object[] {true, 23.3f, .4d }
             };
-            CsvUtils.Write(TEST_FILE_PATH, data);
-            var read = CsvUtils.Read(TEST_FILE_PATH);
+            CsvUtils.Write(path, data);
+            var read = CsvUtils.Read(path);
             Assert.AreEqual("kek", read[0][0]);
             Assert.AreEqual("43", read[0][1]);
             Assert.AreEqual("2", read[0][2]);
@@ -46,14 +45,15 @@ namespace Mythic.UtilsTests
         [TestMethod]
         public void TestConvertValues()
         {
-            Clear(TEST_FILE_PATH);
+            var path = "TestConvertValues.csv";
+            Clear(path);
             var data = new double[][]
             {
                 new double[] { 2.4, 2.5, 7.3 },
                 new double[] { -2.3, -0.01, -6 }
             };
-            CsvUtils.Write(TEST_FILE_PATH, data);
-            var read = CsvUtils.Read(TEST_FILE_PATH);
+            CsvUtils.Write(path, data);
+            var read = CsvUtils.Read(path);
             var converted = CsvUtils.ConvertValues<double>(read);
             for(var i = 0; i < data.Length; i++)
             {
@@ -64,14 +64,15 @@ namespace Mythic.UtilsTests
         [TestMethod]
         public void TestReadAndConvert()
         {
-            Clear(TEST_FILE_PATH);
+            var path = "TestReadAndConvert.csv";
+            Clear(path);
             var data = new double[][]
             {
                 new double[] { 2.4, 2.5, 7.3 },
                 new double[] { -2.3, -0.01, -6 }
             };
-            CsvUtils.Write(TEST_FILE_PATH, data);
-            var converted = CsvUtils.ReadAndConvert<double>(TEST_FILE_PATH);
+            CsvUtils.Write(path, data);
+            var converted = CsvUtils.ReadAndConvert<double>(path);
             for (var i = 0; i < data.Length; i++)
             {
                 CollectionAssert.AreEqual(data[i], converted[i]);
